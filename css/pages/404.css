@@ -1,0 +1,72 @@
+ :root {
+     --brand: #5b5ce2;
+     --brand-dark: #4546c8;
+ }
+
+ html {
+     scroll-behavior: smooth;
+ }
+
+ body {
+     min-height: 100vh;
+     color: #262640;
+     font-family: "Segoe UI", sans-serif;
+     background: #f6f7ff;
+ }
+
+ .error-page {
+     min-height: 100vh;
+     overflow: hidden;
+     background: radial-gradient(circle at 16% 15%, #e4e2ff 0, transparent 25%), radial-gradient(circle at 86% 82%, #d9f7f2 0, transparent 27%), #f9f9ff;
+ }
+
+ .brand-mark {
+     width: 42px;
+     height: 42px;
+     display: inline-grid;
+     place-items: center;
+     border-radius: 13px;
+     color: #fff;
+     background: var(--brand);
+ }
+
+ .error-code {
+     font-size: clamp(7rem, 25vw, 15rem);
+     letter-spacing: -.09em;
+     line-height: .8;
+     color: var(--brand);
+     text-shadow: 8px 8px 0 #dedcff;
+ }
+
+ .lost-icon {
+     position: relative;
+     z-index: 1;
+     width: 96px;
+     height: 96px;
+     display: grid;
+     place-items: center;
+     margin: 0 auto -1rem;
+     border-radius: 50%;
+     color: var(--brand);
+     background: #fff;
+     box-shadow: 0 12px 28px rgba(91, 92, 226, .15);
+     font-size: 2.6rem;
+ }
+
+ .error-card {
+     max-width: 580px;
+     border: 0;
+     border-radius: 1.25rem;
+     box-shadow: 0 18px 45px rgba(56, 57, 129, .10);
+ }
+
+ .btn-brand {
+     background: var(--brand);
+     border-color: var(--brand);
+ }
+
+ .btn-brand:hover,
+ .btn-brand:focus {
+     background: var(--brand-dark);
+     border-color: var(--brand-dark);
+ }

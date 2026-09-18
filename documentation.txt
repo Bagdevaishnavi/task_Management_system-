@@ -1,0 +1,1000 @@
+# TaskFlow --- Task Management System
+
+> A clean, responsive task-management frontend built with **HTML5, CSS3,
+> Vanilla JavaScript, Bootstrap 5, and REST APIs**.
+
+## 1. Project Overview
+
+**TaskFlow** is a browser-based task management application that allows
+authenticated users to manage their daily tasks from a simple dashboard.
+
+The application provides:
+
+-   User registration and login
+-   JWT-based authenticated API requests
+-   Task creation
+-   Task listing and task details
+-   Task editing
+-   Task deletion with confirmation
+-   Task status management
+-   Task priority management
+-   Dashboard task statistics
+-   Status and priority charts
+-   User profile viewing
+-   User profile editing
+-   Profile image upload validation
+-   Logout/session clearing
+-   Dedicated 404 and 500 error pages
+-   Responsive Bootstrap-based UI
+-   SweetAlert2 notifications
+
+The frontend communicates with a remote REST API and stores the returned
+access token in browser `localStorage`.
+
+------------------------------------------------------------------------
+
+## 2. Project Information
+
+  Item              Details
+  ----------------- ---------------------------------------------
+  Project Name      TaskFlow
+  Project Type      Task Management Web Application
+  Frontend          HTML5, CSS3, Vanilla JavaScript
+  UI Framework      Bootstrap 5.3.8
+  Icons             Bootstrap Icons 1.11.3
+  Alerts            SweetAlert2
+  Charts            Chart.js
+  API Style         REST API
+  Authentication    Bearer access token / JWT
+  Client Storage    Browser localStorage
+  API Base URL      `https://intern-crud-task-api.onrender.com`
+  Responsive        Yes
+  Deployment Type   Static frontend + remote backend API
+
+------------------------------------------------------------------------
+
+## 3. Main Features
+
+### 3.1 Authentication
+
+Users can create an account and sign in through the authentication
+pages.
+
+#### Signup
+
+The signup flow:
+
+1.  Collects form values.
+2.  Sends a `POST` request to the authentication API.
+3.  Receives an access token after successful registration.
+4.  Stores the token in `localStorage`.
+5.  Redirects the user to the dashboard.
+
+Endpoint:
+
+``` text
+POST /api/auth/signup
+```
+
+#### Login
+
+The login flow:
+
+1.  Collects email/password form data.
+2.  Sends credentials to the backend.
+3.  Receives an access token.
+4.  Stores the token under `accessToken`.
+5.  Redirects to the dashboard.
+
+Endpoint:
+
+``` text
+POST /api/auth/login
+```
+
+### 3.2 Session Management
+
+The application checks:
+
+``` javascript
+localStorage.getItem("accessToken")
+```
+
+Protected API requests send:
+
+``` http
+Authorization: Bearer <accessToken>
+```
+
+Logout removes the stored token:
+
+``` javascript
+localStorage.removeItem("accessToken");
+```
+
+------------------------------------------------------------------------
+
+## 4. Task Management
+
+### Add Task
+
+Users can create a new task through the Add Task page.
+
+Endpoint:
+
+``` text
+POST /api/tasks
+```
+
+The request contains the task form data and the authentication token.
+
+Typical task fields include:
+
+-   Title
+-   Description
+-   Priority
+-   Status
+
+### View Tasks
+
+The task details page retrieves the authenticated user's task list.
+
+Endpoint:
+
+``` text
+GET /api/tasks
+```
+
+The returned task data is dynamically rendered into Bootstrap-based
+cards.
+
+Each task card displays:
+
+-   Task title
+-   Status
+-   Priority
+-   Description
+-   Edit action
+-   Delete action
+
+### Edit Task
+
+The edit page reads the task ID from the URL:
+
+``` text
+edit-task.html?id=<task-id>
+```
+
+The application fetches the user's tasks, finds the requested task by
+`id` or `_id`, and fills the form with the current values.
+
+Task details are updated through:
+
+``` text
+PATCH /api/tasks/{id}
+```
+
+The current implementation updates:
+
+-   Description
+-   Priority
+
+The task title is intentionally treated as immutable by the frontend.
+
+### Status Update
+
+Status is updated through a dedicated endpoint:
+
+``` text
+PATCH /api/tasks/{id}/status
+```
+
+Example status values used by the UI:
+
+``` text
+pending
+in-progress
+completed
+```
+
+The frontend also normalizes status values so variations such as
+`in_progress`, `in-progress`, `complete`, and `done` can be displayed
+consistently.
+
+### Delete Task
+
+Before deletion, TaskFlow shows a SweetAlert2 confirmation dialog.
+
+After confirmation:
+
+``` text
+DELETE /api/tasks/{id}
+```
+
+The task list is then refreshed.
+
+------------------------------------------------------------------------
+
+## 5. Dashboard
+
+The dashboard calculates task statistics from the authenticated task
+list.
+
+It displays:
+
+-   Total Tasks
+-   Completed Tasks
+-   Pending Tasks
+-   In Progress Tasks
+
+### Status Chart
+
+A doughnut chart represents task distribution by status.
+
+### Priority Chart
+
+A bar chart represents task distribution by:
+
+-   High
+-   Medium
+-   Low
+
+The dashboard does not require a separate statistics endpoint. Instead,
+it derives the statistics from:
+
+``` text
+GET /api/tasks
+```
+
+This keeps the frontend logic simple and allows the dashboard to reflect
+the current task data.
+
+------------------------------------------------------------------------
+
+## 6. User Profile
+
+The Profile page retrieves authenticated user information.
+
+Endpoint:
+
+``` text
+GET /api/profile
+```
+
+The UI can display information such as:
+
+-   Full name
+-   Gender
+-   Personal mobile number
+-   Address
+-   City
+-   University
+-   Guardian name
+-   Guardian phone number
+-   Profile image
+
+### Edit Profile
+
+Profile updates use:
+
+``` text
+PATCH /api/profile
+```
+
+The request uses `FormData` so that text fields and an optional profile
+image can be submitted together.
+
+Profile image validation is performed before upload.
+
+Allowed formats:
+
+``` text
+JPG
+JPEG
+PNG
+```
+
+Maximum file size:
+
+``` text
+2 MB
+```
+
+------------------------------------------------------------------------
+
+## 7. Error Handling
+
+TaskFlow contains dedicated error pages.
+
+### 404 --- Page Not Found
+
+Used when a requested resource/page cannot be found.
+
+File:
+
+``` text
+pages/errors/404.html
+```
+
+### 500 --- Server Error
+
+Used when an unexpected API/server/network error occurs.
+
+File:
+
+``` text
+pages/errors/500.html
+```
+
+The JavaScript files use `try/catch` blocks around asynchronous API
+operations and redirect to the 500 page when appropriate.
+
+------------------------------------------------------------------------
+
+## 8. User Interface
+
+The interface is designed around a clean productivity-dashboard style.
+
+### UI Technologies
+
+-   Bootstrap 5.3.8
+-   Bootstrap Icons
+-   Custom CSS
+-   SweetAlert2
+-   Chart.js
+
+### UI Principles
+
+-   Responsive layout
+-   Clear navigation
+-   Reusable Bootstrap components
+-   Consistent buttons and forms
+-   Status badges
+-   Confirmation dialogs for destructive actions
+-   Dedicated empty/error states
+-   Mobile-friendly layouts
+
+------------------------------------------------------------------------
+
+## 9. Project Structure
+
+``` text
+Task_Management_system_javascript/
+│
+├── index.html
+│
+├── pages/
+│   ├── auth/
+│   │   ├── login.html
+│   │   └── signup.html
+│   │
+│   ├── dashboard/
+│   │   ├── dashboard.html
+│   │   ├── add-task.html
+│   │   ├── edit-task.html
+│   │   └── task-details.html
+│   │
+│   ├── profile/
+│   │   ├── profile.html
+│   │   └── edit-profile.html
+│   │
+│   └── errors/
+│       ├── 404.html
+│       └── 500.html
+│
+├── css/
+│   └── pages/
+│       ├── 404.css
+│       ├── dashboard.css
+│       ├── login.css
+│       └── signup.css
+│
+├── js/
+│   ├── app.js
+│   │
+│   ├── auth/
+│   │   ├── login.js
+│   │   ├── logout.js
+│   │   └── signup.js
+│   │
+│   ├── dashboard/
+│   │   ├── add-task.js
+│   │   ├── dashboard.js
+│   │   ├── edit-task.js
+│   │   └── task-details.js
+│   │
+│   └── profile/
+│       ├── edit-profile.js
+│       └── profile.js
+│
+└── stucture.txt
+```
+
+------------------------------------------------------------------------
+
+## 10. Frontend Architecture
+
+The project follows a lightweight page-based architecture.
+
+``` text
+HTML Pages
+    │
+    ▼
+Vanilla JavaScript
+    │
+    ├── Authentication
+    ├── Task Management
+    ├── Dashboard
+    └── Profile Management
+    │
+    ▼
+Fetch API
+    │
+    ▼
+REST Backend
+    │
+    ▼
+Task / User Data
+```
+
+### Separation of Responsibilities
+
+**HTML**
+
+Responsible for:
+
+-   Page structure
+-   Forms
+-   Buttons
+-   Navigation
+-   Content containers
+
+**CSS**
+
+Responsible for:
+
+-   Layout
+-   Responsive design
+-   Component styling
+-   Page-specific appearance
+
+**JavaScript**
+
+Responsible for:
+
+-   DOM manipulation
+-   API requests
+-   Authentication token handling
+-   Form state
+-   Dynamic rendering
+-   Error handling
+-   User interactions
+
+**Backend API**
+
+Responsible for:
+
+-   Authentication
+-   Data persistence
+-   Task operations
+-   Profile operations
+-   Authorization
+
+------------------------------------------------------------------------
+
+## 11. API Reference
+
+> The frontend currently uses the following API routes. Exact
+> request/response schemas are controlled by the backend service.
+
+### Authentication
+
+  Method   Endpoint             Purpose               Auth
+  -------- -------------------- --------------------- ------
+  POST     `/api/auth/signup`   Create user account   No
+  POST     `/api/auth/login`    Authenticate user     No
+
+### Tasks
+
+  Method   Endpoint                   Purpose                          Auth
+  -------- -------------------------- -------------------------------- ------
+  GET      `/api/tasks`               Get authenticated user's tasks   Yes
+  POST     `/api/tasks`               Create task                      Yes
+  PATCH    `/api/tasks/{id}`          Update task details              Yes
+  PATCH    `/api/tasks/{id}/status`   Update task status               Yes
+  DELETE   `/api/tasks/{id}`          Delete task                      Yes
+
+### Profile
+
+  Method   Endpoint         Purpose               Auth
+  -------- ---------------- --------------------- ------
+  GET      `/api/profile`   Get current profile   Yes
+  PATCH    `/api/profile`   Update profile        Yes
+
+------------------------------------------------------------------------
+
+## 12. Authentication Flow
+
+``` text
+User
+ │
+ ├── Signup/Login
+ │
+ ▼
+Authentication API
+ │
+ ├── Success → accessToken
+ │
+ ▼
+localStorage
+ │
+ └── accessToken
+       │
+       ▼
+Protected API Requests
+       │
+       └── Authorization: Bearer <token>
+```
+
+If no token is available, protected pages/actions redirect the user
+toward login.
+
+------------------------------------------------------------------------
+
+## 13. Task Lifecycle
+
+``` text
+Create Task
+     │
+     ▼
+   Pending
+     │
+     ▼
+ In Progress
+     │
+     ▼
+ Completed
+```
+
+The user can update the task status from the edit-task interface.
+
+------------------------------------------------------------------------
+
+## 14. Dynamic Status UI
+
+The application maps task statuses to visual indicators.
+
+  Status        Icon Concept     UI Class
+  ------------- ---------------- ---------------
+  Pending       Clock            `pending`
+  In Progress   Refresh/Repeat   `in-progress`
+  Completed     Check Circle     `completed`
+
+The JavaScript normalizes underscores and hyphens before deciding which
+UI state to render.
+
+------------------------------------------------------------------------
+
+## 15. JavaScript Techniques Used
+
+This project demonstrates several practical JavaScript concepts.
+
+### DOM Selection
+
+``` javascript
+document.querySelector()
+document.querySelectorAll()
+```
+
+### Event Handling
+
+``` javascript
+addEventListener()
+```
+
+### Async/Await
+
+``` javascript
+const response = await fetch(...);
+```
+
+### REST API Integration
+
+``` javascript
+fetch(url, options)
+```
+
+### Template Literals
+
+``` javascript
+`<div>${title}</div>`
+```
+
+### Object Spread
+
+``` javascript
+data = {
+    ...data,
+    [name]: value
+};
+```
+
+### URLSearchParams
+
+Used to read task IDs from URLs:
+
+``` javascript
+const params = new URLSearchParams(window.location.search);
+const taskId = params.get("id");
+```
+
+### FormData
+
+Used for profile updates with optional image upload:
+
+``` javascript
+const formData = new FormData();
+```
+
+### Event Delegation
+
+The task details page uses event delegation for dynamically rendered
+delete buttons:
+
+``` javascript
+task_container.addEventListener("click", async (e) => {
+    const deleteButton = e.target.closest(".deletebtn");
+});
+```
+
+This allows dynamically inserted task cards to continue supporting
+delete actions.
+
+------------------------------------------------------------------------
+
+## 16. Notifications
+
+SweetAlert2 is used for user feedback.
+
+Examples include:
+
+-   Login success
+-   Signup success
+-   Login failure
+-   Task creation success
+-   Task update success
+-   Delete confirmation
+-   Delete success
+-   Profile update success
+-   Missing login session
+-   Invalid profile image
+-   Oversized image
+-   API errors
+
+This provides a more user-friendly experience than browser `alert()`
+dialogs.
+
+------------------------------------------------------------------------
+
+## 17. Installation and Setup
+
+### Requirements
+
+You only need:
+
+-   A modern web browser
+-   A local static server
+
+No frontend package installation is required for the current project
+because the UI libraries are loaded through CDN links.
+
+### Run Locally
+
+#### Option 1 --- VS Code Live Server
+
+1.  Open the project folder in VS Code.
+2.  Install/use the Live Server extension.
+3.  Open `index.html`.
+4.  Click **Go Live**.
+
+#### Option 2 --- Any Static Server
+
+Serve the project root using your preferred static HTTP server.
+
+Avoid opening complex pages directly through `file://` when possible
+because browser security rules can interfere with web requests and
+module/resource loading.
+
+------------------------------------------------------------------------
+
+## 18. External Dependencies
+
+The current HTML pages load these external libraries:
+
+### Bootstrap
+
+``` text
+Bootstrap 5.3.8
+```
+
+### Bootstrap Icons
+
+``` text
+Bootstrap Icons 1.11.3
+```
+
+### SweetAlert2
+
+``` text
+SweetAlert2 11
+```
+
+### Chart.js
+
+Used by the dashboard for task statistics visualization.
+
+------------------------------------------------------------------------
+
+## 19. Environment / Configuration
+
+The API URL is currently written directly in the JavaScript files:
+
+``` javascript
+https://intern-crud-task-api.onrender.com
+```
+
+For a larger production application, it would be better to centralize
+the API base URL into one configuration file, for example:
+
+``` javascript
+const API_BASE_URL =
+    "https://intern-crud-task-api.onrender.com";
+```
+
+Then construct endpoints from that value.
+
+This reduces duplication and makes development/staging/production
+configuration easier.
+
+------------------------------------------------------------------------
+
+## 20. Security Considerations
+
+The frontend uses an access token for authenticated API requests.
+
+Current approach:
+
+``` javascript
+localStorage.setItem("accessToken", result.accessToken);
+```
+
+Important production considerations:
+
+-   Do not expose secrets in frontend JavaScript.
+-   Validate all data on the backend.
+-   Enforce authorization on every protected backend route.
+-   Use HTTPS in production.
+-   Validate uploaded files on the server as well as the client.
+-   Consider an HttpOnly, Secure cookie-based authentication strategy
+    where appropriate.
+-   Do not treat frontend validation as a security boundary.
+-   Avoid logging sensitive authentication data in production.
+-   Implement appropriate token expiration and refresh behavior on the
+    backend.
+
+------------------------------------------------------------------------
+
+## 21. Testing Checklist
+
+### Authentication
+
+-   [ ] Signup with valid data
+-   [ ] Signup with invalid data
+-   [ ] Login with valid credentials
+-   [ ] Login with invalid credentials
+-   [ ] Verify token is stored
+-   [ ] Logout successfully
+-   [ ] Verify token is removed
+-   [ ] Open protected functionality without login
+
+### Tasks
+
+-   [ ] Create task
+-   [ ] View tasks
+-   [ ] View task details
+-   [ ] Edit description
+-   [ ] Edit priority
+-   [ ] Change status
+-   [ ] Delete task
+-   [ ] Cancel delete confirmation
+-   [ ] Test invalid/missing task ID
+
+### Dashboard
+
+-   [ ] Verify total task count
+-   [ ] Verify completed count
+-   [ ] Verify pending count
+-   [ ] Verify in-progress count
+-   [ ] Verify status chart
+-   [ ] Verify priority chart
+
+### Profile
+
+-   [ ] View profile
+-   [ ] Edit profile
+-   [ ] Update text fields
+-   [ ] Upload valid image
+-   [ ] Reject unsupported image type
+-   [ ] Reject image above 2 MB
+
+### Error Handling
+
+-   [ ] Test 404 route
+-   [ ] Test API failure
+-   [ ] Test network/server failure
+-   [ ] Verify 500 page behavior
+
+### Responsive UI
+
+-   [ ] Desktop
+-   [ ] Tablet
+-   [ ] Mobile
+-   [ ] Form layout
+-   [ ] Sidebar/navigation
+-   [ ] Task cards
+-   [ ] Dashboard charts
+
+------------------------------------------------------------------------
+
+## 22. Current Limitations / Improvement Opportunities
+
+The project is functional as a frontend task-management application, but
+the following areas can be improved for a production-grade
+implementation.
+
+### API Configuration
+
+The API base URL is duplicated in multiple files.
+
+**Improvement:** create a single API configuration module.
+
+### Form Submission
+
+Some forms use button click handlers rather than relying entirely on the
+form `submit` event.
+
+**Improvement:** use:
+
+``` javascript
+form.addEventListener("submit", ...)
+```
+
+This improves keyboard accessibility and standard form behavior.
+
+### Client-Side Validation
+
+The current frontend performs some validation, especially for profile
+images.
+
+**Improvement:** add reusable validation for required task/auth/profile
+fields.
+
+### Authentication UX
+
+The current application checks whether a token exists.
+
+**Improvement:** also handle:
+
+-   expired tokens
+-   unauthorized `401` responses
+-   token refresh
+-   automatic session expiration
+
+### Rendering Safety
+
+Task content is inserted using HTML template strings.
+
+**Improvement:** carefully escape user-controlled text or use DOM
+APIs/textContent to reduce XSS risk.
+
+### State Management
+
+The application currently keeps form data in local JavaScript objects.
+
+**Improvement:** introduce a small reusable state/service layer if the
+application becomes larger.
+
+### Accessibility
+
+Further improvements could include:
+
+-   stronger keyboard navigation
+-   improved focus states
+-   ARIA feedback for dynamic updates
+-   better form error messaging
+
+------------------------------------------------------------------------
+
+## 23. Recommended Future Features
+
+Potential next versions could include:
+
+1.  Task search
+2.  Task filtering
+3.  Priority filtering
+4.  Status filtering
+5.  Sorting by date/priority
+6.  Due dates
+7.  Task categories
+8.  Pagination
+9.  Empty-state UI
+10. Task creation/edit validation
+11. Profile email display
+12. Password change
+13. Forgot-password flow
+14. Token refresh
+15. Dark mode
+16. Notifications
+17. Calendar integration
+18. Drag-and-drop task workflow
+19. Activity history
+20. Admin dashboard
+21. Role-based permissions
+22. Automated testing
+23. CI/CD
+24. Centralized API service
+25. Production monitoring
+
+------------------------------------------------------------------------
+
+## 24. Developer Notes
+
+The project intentionally uses **Vanilla JavaScript** rather than React,
+Vue, Angular, or another frontend framework.
+
+This makes the project useful for demonstrating understanding of:
+
+-   DOM manipulation
+-   JavaScript events
+-   Fetch API
+-   REST APIs
+-   asynchronous programming
+-   authentication
+-   CRUD operations
+-   browser storage
+-   dynamic UI rendering
+-   form handling
+-   file upload handling
+-   basic frontend architecture
+
+The project can therefore serve as a practical JavaScript portfolio
+project and as a foundation for migrating to a framework later if
+required.
+
+------------------------------------------------------------------------
+
+## 25. Conclusion
+
+**TaskFlow** demonstrates a complete frontend workflow for an
+authenticated task management system.
+
+The application connects a responsive HTML/CSS interface with a REST
+backend and implements the major CRUD operations required for task
+management, along with authentication, profile management, dashboard
+analytics, notifications, and error handling.
+
+The project provides a solid practical demonstration of modern
+browser-side JavaScript concepts while keeping the implementation
+framework-free and easy to understand.
+
+------------------------------------------------------------------------
+
+## 26. Project Credits
+
+**Project:** TaskFlow --- Task Management System\
+**Frontend:** HTML5, CSS3, Vanilla JavaScript\
+**UI:** Bootstrap\
+**Notifications:** SweetAlert2\
+**Charts:** Chart.js\
+**API:** Remote REST API\
+**Year:** 2026

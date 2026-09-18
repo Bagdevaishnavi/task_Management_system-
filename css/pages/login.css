@@ -1,0 +1,135 @@
+:root {
+    --brand: #5b5ce2;
+    --brand-dark: #4546c8;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background: #f6f7ff;
+    color: #24243d;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.signup-page {
+    min-height: 100svh;
+}
+
+.intro-panel {
+    min-height: 100vh;
+    padding: 4rem 10%;
+    color: #fff;
+    background: radial-gradient(circle at 16% 14%, rgba(152, 147, 255, .7), transparent 30%), radial-gradient(circle at 84% 84%, rgba(93, 223, 210, .28), transparent 34%), linear-gradient(135deg, #35358d, #5b5ce2);
+}
+
+.brand-mark {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: inline-grid;
+    place-items: center;
+    background: rgba(255, 255, 255, .18);
+    font-size: 1.35rem;
+}
+
+.benefit {
+    background: rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, .16);
+}
+
+.form-panel {
+    max-width: 515px;
+    width: 100%;
+}
+
+.form-control,
+.input-group-text {
+    border-color: #e2e4f0;
+    background: #fff;
+    min-height: 46px;
+}
+
+.input-group-text {
+    color: #777a9e;
+    border-right: 0;
+}
+
+.form-control {
+    border-left: 0;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: var(--brand);
+}
+
+.input-group:focus-within {
+    box-shadow: 0 0 0 .25rem rgba(91, 92, 226, .14);
+    border-radius: .375rem;
+}
+
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .form-control {
+    border-color: var(--brand);
+}
+
+.password-toggle {
+    border-left: 0;
+    color: #777a9e;
+}
+
+.btn-brand {
+    background: var(--brand);
+    border-color: var(--brand);
+    min-height: 46px;
+}
+
+.btn-brand:hover,
+.btn-brand:focus {
+    background: var(--brand-dark);
+    border-color: var(--brand-dark);
+}
+
+@media (max-width: 991.98px) {
+    .intro-panel {
+        min-height: auto;
+        padding: 2.5rem;
+    }
+}
+
+/* Keep the login controls and actions within standard laptop viewports. */
+@media (min-width: 992px) {
+    .signup-page > section:last-child {
+        padding: 1.5rem !important;
+    }
+
+    .form-panel {
+        padding-block: 0 !important;
+    }
+
+    .form-panel > .mb-4 {
+        margin-bottom: 1rem !important;
+    }
+
+    .form-panel .row {
+        --bs-gutter-y: .75rem;
+    }
+
+    .form-panel .form-label {
+        margin-bottom: .25rem;
+    }
+
+    .form-panel > p {
+        margin-top: 1rem !important;
+    }
+}
+
+@media (max-height: 700px) and (min-width: 992px) {
+    .intro-panel {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+

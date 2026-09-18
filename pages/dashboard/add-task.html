@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Add task | TaskFlow</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="../../css/pages/dashboard.css">
+</head>
+<body>
+	<button class="sidebar-toggle" type="button" aria-controls="site-sidebar" aria-expanded="false"><i class="bi bi-list"></i><span>Menu</span></button>
+	<div class="dashboard-layout">
+		<aside class="sidebar" id="site-sidebar">
+			<a href="dashboard.html" class="brand text-decoration-none"><span><i class="bi bi-check2-square"></i></span>TaskFlow</a>
+			<nav class="nav flex-column" aria-label="Primary navigation">
+				<a class="nav-link" href="dashboard.html"><i class="bi bi-grid-1x2-fill"></i>Dashboard</a>
+				<a class="nav-link active" href="add-task.html" aria-current="page"><i class="bi bi-check2-circle"></i>My tasks</a>
+			</nav>
+			<nav class="nav flex-column sidebar-footer" aria-label="Account navigation">
+				<a class="nav-link" href="../profile/profile.html"><i class="bi bi-person"></i>Profile</a>
+				<a class="nav-link" id="logout-btn" type="button"><i class="bi bi-box-arrow-left" ></i>Log out</a>
+			</nav>
+		</aside>
+
+		<main class="main-content">
+			<header class="topbar task-topbar">
+				<div>
+					<p class="date mb-1">MY TASKS</p>
+					<h1>Create a new task</h1>
+				</div>
+				<a href="dashboard.html" class="back-link"><i class="bi bi-arrow-left"></i> Back to dashboard</a>
+			</header>
+
+			<section class="task-form-section" aria-labelledby="task-form-title">
+				<div class="form-intro">
+					<span class="form-icon"><i class="bi bi-pencil-square"></i></span>
+					<div>
+						<h2 id="task-form-title">Task details</h2>
+						<p>Capture the next thing you want to get done.</p>
+					</div>
+				</div>
+
+				<form class="task-form needs-validation">
+					<div class="form-field full-width ">
+						<label for="task-title">Task title</label>
+						<input type="text" id="task-title" name="title" class="form-control"  placeholder="e.g. Prepare project presentation" required>
+					</div>
+
+					<div class="form-field full-width">
+						<label for="task-description">Description <span>(optional)</span></label>
+						<textarea id="task-description" name="description" rows="5" class="form-control" placeholder="Add notes, links, or helpful context..."></textarea>
+					</div>
+
+					<div class="form-field">
+						<label for="task-priority">Priority</label>
+						<select id="task-priority" name="priority" required class="form-control">
+							<option value="" disabled selected class="text-center"><-----Select priority-----></option>
+							<option value="medium">Medium</option>
+							<option value="high" >High</option>
+							<option value="low">Low</option>
+						</select>
+					</div>
+
+					<div class="form-field">
+						<label for="task-status">Status</label>
+						<select id="task-status" name="status" required class="form-control">
+							<option value="pending" selected>Pending</option>
+						</select>
+					</div>
+
+					<div class="form-actions full-width">
+						<a href="dashboard.html" class="btn btn-light-cancel">Cancel</a>
+						<button type="submit" class="btn btn-brand" id="addtaskbtn"><i class="bi bi-plus-lg"></i> Create task</button>
+					</div>
+				</form>
+			</section>
+		</main>
+	</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../../js/dashboard/add-task.js" type="module"></script>
+<script src="../../js/auth/logout.js"></script>
+<script src="../../js/sidebar.js"></script>
+</html>
