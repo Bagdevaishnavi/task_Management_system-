@@ -38,7 +38,7 @@ TaskFlow helps authenticated users create, manage, update, track, and delete tas
 
 Watch the complete working demonstration of TaskFlow:
 
-[▶️ Watch TaskFlow Demo Video](imgs/demo.mp4)
+[▶️ Watch TaskFlow Demo Video](imgs/task-management-live-demo.mp4)
 
 > **Important:** Put your demo video inside the `imgs` folder and name it `demo.mp4`.
 >
