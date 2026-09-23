@@ -199,6 +199,7 @@ const getCurrentTask = async () => {
         // ======================================
 
         data = {
+            title:currentTask.title || "",
             description: currentTask.description || "",
             priority: currentTask.priority || "",
             status: currentTask.status || ""
