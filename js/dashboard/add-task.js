@@ -27,7 +27,7 @@ addtaskbtn.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     if (!addtaskbtn.checkValidity()) {
-        loginsubmit.classList.add("was-validated");
+        addtaskbtn.classList.add("was-validated");
         return;
     }
 

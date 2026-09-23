@@ -61,7 +61,7 @@ signup.addEventListener("submit", async (e) => {
 
             Swal.fire({
                 icon: "error",
-                title: "Login Failed!",
+                title: "sign up Failed!",
                 text: result.error || "Invalid email or password"
             });
 

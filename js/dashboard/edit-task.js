@@ -1,46 +1,33 @@
+
 // ==========================================
 // EDIT TASK JS
 // ==========================================
 
-console.log("EDIT JS LOADED");
-
+console.log("EDIT TASK JS LOADED");
 
 // ==========================================
 // DOM ELEMENTS
 // ==========================================
 
 const updateForm = document.querySelector("#updateTaskForm");
+const formInputs = updateForm.querySelectorAll(".form-control");
+const cancel = document.querySelector('.btn-light-cancel');
+// console.log(cancel);
 
-const formInputs = document.querySelectorAll(".form-control");
+// ==========================================
+// API URL
+// ==========================================
 
+const API_URL = "https://intern-crud-task-api.onrender.com/api/tasks";
 
 // ==========================================
 // GET TASK ID FROM URL
 // ==========================================
 
 const params = new URLSearchParams(window.location.search);
-
 const taskId = params.get("id");
 
 console.log("Task ID:", taskId);
-
-
-// ==========================================
-// CHECK TASK ID
-// ==========================================
-
-if (!taskId) {
-
-    Swal.fire({
-        icon: "error",
-        title: "Task ID Missing!",
-        text: "Unable to find the task."
-    }).then(() => {
-        window.location.href = "dashboard.html";
-    });
-
-}
-
 
 // ==========================================
 // TOKEN
@@ -48,45 +35,74 @@ if (!taskId) {
 
 const token = localStorage.getItem("accessToken");
 
-if (!token) {
+// ==========================================
+// TASK DATA
+// ==========================================
 
-    Swal.fire({
-        icon: "error",
-        title: "Login Required!",
-        text: "Please login first."
-    }).then(() => {
-        window.location.href = "../auth/login.html";
-    });
+let data = {
+    description: "",
+    priority: "",
+    status: ""
+};
 
+// ==========================================
+// VALIDATE PAGE
+// ==========================================
+
+
+if (cancel && taskId) {
+    cancel.href =
+        `../../pages/dashboard/task-details.html?id=${taskId}`;
 }
 
+const validatePage = () => {
 
-// ==========================================
-// DATA OBJECT
-// ==========================================
+    // Check Task ID
+    if (!taskId) {
 
-let data = {};
+        Swal.fire({
+            icon: "error",
+            title: "Task ID Missing!",
+            text: "Unable to find the requested task."
+        }).then(() => {
+            window.location.href = "dashboard.html";
+        });
 
+        return false;
+    }
+
+    // Check Token
+    if (!token) {
+
+        Swal.fire({
+            icon: "error",
+            title: "Login Required!",
+            text: "Please login first."
+        }).then(() => {
+            window.location.href = "../auth/login.html";
+        });
+
+        return false;
+    }
+
+    return true;
+};
 
 // ==========================================
 // HANDLE INPUT CHANGE
 // ==========================================
 
-const handleChange = (e) => {
+const handleChange = (event) => {
 
-    const { name, value } = e.target;
+    const { name, value } = event.target;
 
-    data = {
-        ...data,
-        [name]: value
-    };
+    data[name] = value;
 
     console.log("Updated Data:", data);
 };
 
-
 // ==========================================
-// ADD INPUT EVENT
+// ADD INPUT EVENTS
 // ==========================================
 
 formInputs.forEach((input) => {
@@ -96,7 +112,6 @@ formInputs.forEach((input) => {
     input.addEventListener("change", handleChange);
 
 });
-
 
 // ==========================================
 // GET CURRENT TASK
@@ -108,18 +123,14 @@ const getCurrentTask = async () => {
 
         console.log("Getting current task...");
 
-        const response = await fetch(
-            "https://intern-crud-task-api.onrender.com/api/tasks",
-            {
-                method: "GET",
+        const response = await fetch(API_URL, {
+            method: "GET",
 
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "content-type": "application/json"
-                }
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
             }
-        );
-
+        });
 
         // ======================================
         // CHECK RESPONSE
@@ -127,53 +138,41 @@ const getCurrentTask = async () => {
 
         if (!response.ok) {
 
-            const errorText = await response.text();
-
-            console.log("Server Error:", errorText);
-
             throw new Error(
-                `Failed to get tasks: ${response.status}`
+                `Failed to load tasks. Status: ${response.status}`
             );
         }
 
-
         // ======================================
-        // JSON
+        // GET JSON
         // ======================================
 
         const result = await response.json();
 
         console.log("All Tasks:", result);
 
-
         // ======================================
-        // API RETURNS ARRAY DIRECTLY
+        // VALIDATE ARRAY
         // ======================================
 
-        const tasks = result;
-
-
-        if (!Array.isArray(tasks)) {
+        if (!Array.isArray(result)) {
 
             throw new Error(
-                "Tasks data is not an array."
+                "Invalid task data received from server."
             );
         }
-
 
         // ======================================
         // FIND CURRENT TASK
         // ======================================
 
-        const currentTask = tasks.find(
+        const currentTask = result.find(
             (task) =>
                 task._id === taskId ||
                 task.id === taskId
         );
 
-
         console.log("Current Task:", currentTask);
-
 
         // ======================================
         // TASK NOT FOUND
@@ -186,27 +185,26 @@ const getCurrentTask = async () => {
                 title: "Task Not Found!",
                 text: "The requested task does not exist."
             }).then(() => {
-                window.location.href = "../../pages/dashboard/dashboard.html";
+
+                window.location.href =
+                    "../../pages/dashboard/dashboard.html";
+
             });
 
             return;
         }
 
-
         // ======================================
-        // SET DATA
+        // STORE TASK DATA
         // ======================================
 
         data = {
-            title: currentTask.title || "",
             description: currentTask.description || "",
             priority: currentTask.priority || "",
             status: currentTask.status || ""
         };
 
-
         console.log("Form Data:", data);
-
 
         // ======================================
         // FILL FORM
@@ -222,67 +220,92 @@ const getCurrentTask = async () => {
 
         });
 
-
     } catch (error) {
 
-        console.error(
-            "Get Current Task Error:",
-            error
-        );
+        console.error("Get Current Task Error:", error);
 
         Swal.fire({
             icon: "error",
-            title: "Error!",
-            text: error.message
+            title: "Unable to Load Task!",
+            text: error.message || "Something went wrong."
         });
 
     }
-
 };
-
-
-// ==========================================
-// RUN GET CURRENT TASK
-// ==========================================
-
-getCurrentTask();
-
 
 // ==========================================
 // UPDATE TASK
 // ==========================================
 
-// ==========================================
-// UPDATE TASK (DESCRIPTION, PRIORITY & STATUS)
-// ==========================================
+updateForm.addEventListener("submit", async (event) => {
 
-updateForm.addEventListener("click", async (e) => {
-    e.preventDefault();
+    event.preventDefault();
 
-    const token = localStorage.getItem("accessToken");
+    // ======================================
+    // FORM VALIDATION
+    // ======================================
 
-    if (!token) {
+    if (!updateForm.checkValidity()) {
+
+        updateForm.classList.add("was-validated");
+
+        return;
+    }
+
+    // ======================================
+    // TOKEN CHECK
+    // ======================================
+
+    const currentToken =
+        localStorage.getItem("accessToken");
+
+    if (!currentToken) {
+
         Swal.fire({
             icon: "error",
             title: "Login Required!",
             text: "Please login first."
+        }).then(() => {
+
+            window.location.href =
+                "../auth/login.html";
+
         });
+
         return;
     }
 
+    // ======================================
+    // DISABLE SUBMIT BUTTON
+    // ======================================
+
+    const submitButton =
+        updateForm.querySelector("button[type='submit']");
+
+    if (submitButton) {
+        submitButton.disabled = true;
+    }
+
     try {
+
         const headers = {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            "Authorization": `Bearer ${currentToken}`
         };
 
-        // 1. UPDATE DESCRIPTION & PRIORITY
-        // Uses PATCH /api/tasks/{id} (title is immutable and omitted)
+        // ======================================
+        // STEP 1
+        // UPDATE DESCRIPTION + PRIORITY
+        // ======================================
+
+        console.log("Updating task details...");
+
         const updateDetailsResponse = await fetch(
-            `https://intern-crud-task-api.onrender.com/api/tasks/${taskId}`,
+            `${API_URL}/${taskId}`,
             {
                 method: "PATCH",
-                headers,
+                headers: headers,
+
                 body: JSON.stringify({
                     description: data.description,
                     priority: data.priority
@@ -290,42 +313,105 @@ updateForm.addEventListener("click", async (e) => {
             }
         );
 
+        // ======================================
+        // CHECK DETAILS RESPONSE
+        // ======================================
+
         if (!updateDetailsResponse.ok) {
-            throw new Error(`Failed to update details: ${updateDetailsResponse.status}`);
-        }
 
-        // 2. UPDATE STATUS
-        // Uses dedicated status endpoint PATCH /api/tasks/{id}/status
-        if (data.status) {
-            const updateStatusResponse = await fetch(
-                `https://intern-crud-task-api.onrender.com/api/tasks/${taskId}/status`,
-                {
-                    method: "PATCH",
-                    headers,
-                    body: JSON.stringify({
-                        status: data.status
-                    })
-                }
+            throw new Error(
+                `Failed to update task details. Status: ${updateDetailsResponse.status}`
             );
-
-            if (!updateStatusResponse.ok) {
-                throw new Error(`Failed to update status: ${updateStatusResponse.status}`);
-            }
         }
 
-        // SUCCESS ALERTS & REDIRECT
-        Swal.fire({
+        console.log("Task details updated.");
+
+        // ======================================
+        // STEP 2
+        // UPDATE STATUS
+        // ======================================
+
+        console.log("Updating task status...");
+
+        const updateStatusResponse = await fetch(
+            `${API_URL}/${taskId}/status`,
+            {
+                method: "PATCH",
+                headers: headers,
+
+                body: JSON.stringify({
+                    status: data.status
+                })
+            }
+        );
+
+        // ======================================
+        // CHECK STATUS RESPONSE
+        // ======================================
+
+        if (!updateStatusResponse.ok) {
+
+            throw new Error(
+                `Failed to update task status. Status: ${updateStatusResponse.status}`
+            );
+        }
+
+        console.log("Task status updated.");
+
+        // ======================================
+        // SUCCESS
+        // ======================================
+
+        await Swal.fire({
             icon: "success",
             title: "Task Updated!",
-            text: "Task details and status updated successfully.",
+            text: "Task updated successfully.",
             timer: 1500,
             showConfirmButton: false
-        }).then(() => {
-            window.location.href = "../../pages/dashboard/task-details.html";
         });
 
+        // ======================================
+        // REDIRECT WITH TASK ID
+        // ======================================
+
+        window.location.href =
+            `../../pages/dashboard/task-details.html?id=${taskId}`;
+
     } catch (error) {
-        console.error("Update Error:", error);
-        window.location.href = '../../pages/errors/500.html';
+
+        console.error("Update Task Error:", error);
+
+        // ======================================
+        // ERROR ALERT
+        // ======================================
+
+        Swal.fire({
+            icon: "error",
+            title: "Update Failed!",
+            text: error.message ||
+                "Unable to update the task."
+        });
+
+    } finally {
+
+        // ======================================
+        // ENABLE BUTTON AGAIN
+        // ======================================
+
+        if (submitButton) {
+            submitButton.disabled = false;
+        }
+
     }
+
 });
+
+// ==========================================
+// PAGE INITIALIZATION
+// ==========================================
+
+if (validatePage()) {
+
+    getCurrentTask();
+
+}

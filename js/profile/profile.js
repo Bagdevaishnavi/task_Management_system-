@@ -32,7 +32,8 @@ const profiledetails = async () => {
                 text: "Please login first."
             });
 
-            return;
+            window.location.href = '../../pages/auth/login.html'
+            
         }
 
         // Retrieve the profile from the backend using the stored JWT for authorization.

@@ -2,9 +2,6 @@
 const logindata = document.querySelectorAll('.form-control');
 const loginsubmit = document.querySelector('#loginform');
 console.log(loginsubmit);
-
-// import { Baseurl } from "../config/api.js";
-
 let data = {};
 
 // Maintain the current form payload so the login request always sends the latest user input.

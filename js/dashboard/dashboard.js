@@ -3,8 +3,6 @@ const totalTasks = document.querySelector('#total-tasks');
 const completedTasks = document.querySelector('#completed-tasks');
 const pendingTasks = document.querySelector('#pending-tasks');
 const progressTasks = document.querySelector('#progress-tasks');
-const username = document.querySelectorAll('.user-name');
-console.log(username);
 
 
 
@@ -50,7 +48,10 @@ const renderCharts = (statuses, priorities) => {
 // Fetch the authenticated user's tasks and derive the dashboard metrics and charts from them.
 const loadDashboard = async () => {
 	const token = localStorage.getItem('accessToken');
-	if (!token) return;
+	if (!token) {
+		window.location.href = '../../pages/auth/login.html'
+		return;
+	};
 
 	try {
 		// Request the task list using the stored JWT so only the logged-in user's items are returned.

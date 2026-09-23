@@ -80,9 +80,9 @@ const getalltasks = async () => {
 
         // Render each task as a self-contained card with status, priority, description, and actions.
         // Show an empty-state message when the user has not created any tasks.
-if (tasks.length === 0) {
+        if (tasks.length === 0) {
 
-    task_container.innerHTML = `
+            task_container.innerHTML = `
         <div class="no-tasks-container text-center py-5">
 
             <div class="no-tasks-icon mb-3">
@@ -109,43 +109,43 @@ if (tasks.length === 0) {
         </div>
     `;
 
-    return;
-}else{
-     tasks.forEach((element) => {
+            return;
+        } else {
+            tasks.forEach((element) => {
 
-            const {
-                title,
-                status,
-                priority,
-                description,
-                id
-            } = element;
+                const {
+                    title,
+                    status,
+                    priority,
+                    description,
+                    id
+                } = element;
 
-            // Map backend status values to the icon and CSS class expected by the UI.
-            const statusValue = String(status || '')
-                .toLowerCase()
-                .replace(/[_-]/g, ' ');
+                // Map backend status values to the icon and CSS class expected by the UI.
+                const statusValue = String(status || '')
+                    .toLowerCase()
+                    .replace(/[_-]/g, ' ');
 
-            let statusIcon = 'bi-clock';
-            let statusClass = 'pending';
+                let statusIcon = 'bi-clock';
+                let statusClass = 'pending';
 
-            if (statusValue.includes('progress')) {
+                if (statusValue.includes('progress')) {
 
-                statusIcon = 'bi-arrow-repeat';
-                statusClass = 'in-progress';
+                    statusIcon = 'bi-arrow-repeat';
+                    statusClass = 'in-progress';
 
-            } 
-            else if (
-                statusValue.includes('complete') ||
-                statusValue === 'done'
-            ) {
+                }
+                else if (
+                    statusValue.includes('complete') ||
+                    statusValue === 'done'
+                ) {
 
-                statusIcon = 'bi-check-circle';
-                statusClass = 'completed';
+                    statusIcon = 'bi-check-circle';
+                    statusClass = 'completed';
 
-            }
+                }
 
-            task_container.innerHTML += `
+                task_container.innerHTML += `
 
                 <div class="card m-3 p-4">
 
@@ -251,9 +251,9 @@ if (tasks.length === 0) {
 
             `;
 
-        });
-}
-       
+            });
+        }
+
 
     } catch (error) {
 
@@ -309,6 +309,7 @@ task_container.addEventListener('click', async (e) => {
 
         }
 
+
         // Delete the selected task through the API endpoint identified by its task ID.
         const response = await fetch(
             `https://intern-crud-task-api.onrender.com/api/tasks/${taskId}`,
@@ -321,6 +322,9 @@ task_container.addEventListener('click', async (e) => {
                 }
             }
         );
+
+        // ===================================================== // HANDLE 204 NO CONTENT // =====================================================
+        if (response.status === 204) { Swal.fire({ icon: "success", title: "Task Deleted!", text: "Task has been deleted successfully." }).then(() => { window.location.href = "../../pages/dashboard/dashboard.html"; }); return; }
 
         const result = await response.json();
 
